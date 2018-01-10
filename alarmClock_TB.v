@@ -26,17 +26,17 @@ module alarmClock_TB;
 	initial begin
 		clock = 0;
 		forever begin
-			# 4 clock = ~clock;
+			#10 clock = ~clock;
 		end
 	end
 	
 	initial begin
 		// Initialize Inputs
 		reset = 0;
-      #10 reset = 1;
-		#10 reset = 0;
+      //#10 reset = 1;
+		//#10 reset = 0;
 		// Wait 100 ns for global reset to finish
-        
+     #2000000000 $stop;   
 		// Add stimulus here
 
 	end
