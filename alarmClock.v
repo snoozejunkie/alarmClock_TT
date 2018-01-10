@@ -15,7 +15,6 @@ module alarmClock(
 
 //
 
-reg [25:0] clock_divider;
 
 reg [6:0] count_second; //max = 60
 reg [6:0] count_minute; //max = 60
@@ -28,7 +27,10 @@ wire [3:0] reg_hour_LSB;
 
 //assign wire=reg
 
+// ----- clocks for clock and setting clock/alarm //
 wire clock_1_second;
+wire clock_quarter_second;
+// ---------------------------------------------- //
 
 numberToDigits n1(.binaryNumber(count_minute),.digit_MSB(reg_minute_MSB),.digit_LSB(reg_minute_LSB));
 numberToDigits n2(.binaryNumber(count_hour),.digit_MSB(reg_hour_MSB),.digit_LSB(reg_hour_LSB));
@@ -38,9 +40,16 @@ decodeTo7Segment d2(.numberToDecode(reg_minute_LSB),.digitLeds(display_minute_LS
 decodeTo7Segment d3(.numberToDecode(reg_hour_MSB),.digitLeds(display_hour_MSB));
 decodeTo7Segment d4(.numberToDecode(reg_hour_LSB),.digitLeds(display_hour_LSB));
 
+
+generateClocks g(.clock(clock),.reset(reset),.clock_1_second(clock_1_second),.clock_quarter_second(clock_quarter_second));
+//input clock,
+//input reset,
+//output reg clock_1_second,
+//output reg clock_quarter_second
+
 // Divide clock from 50 MHz to 1 Hz (1 sec) //
 
-always@(posedge clock)
+/*always@(posedge clock)
 	begin
 		if(reset) 
 			begin
@@ -52,7 +61,9 @@ always@(posedge clock)
 	end
 	
 // 1 sec clock
-assign clock_1_second = clock_divider[0];
+assign clock_1_second = clock_divider[25];
+*/
+
 //faster clock for test bench  
 //assign clock_1_second = clock_divider[0];   
 
@@ -64,6 +75,8 @@ assign clock_1_second = clock_divider[0];
 initial count_second <= 0;
 initial count_minute <= 0;
 initial count_hour <= 0;
+
+//assign reg_local = input1;
 
 always@(posedge clock_1_second) 
 	begin
